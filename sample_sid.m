@@ -29,7 +29,7 @@ for i = 1:num_files
         shape = size(image);
     end
     
-    X = randperm(shape(2), num_samples);
+    X = randperm(shape(1), num_samples);
     Y = randperm(shape(2), num_samples);
     
     [~, invar] = get_descriptors(image, settings, [], X, Y);
