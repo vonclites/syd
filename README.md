@@ -1,4 +1,4 @@
-# el_sid
+# syd
 Python Interface to SID Feature Extraction library
 
 
