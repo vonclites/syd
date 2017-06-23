@@ -1,5 +1,5 @@
-# el_sid
-Python Interface to SID Feature Extraction library
+# syd
+Python Interface to SID (Scale-invariant descriptor) image feature extraction
 
 
 Credit for Scale-invariant descriptor (SID) feature extraction algorithm and code goes to Kokkinos, Iasonas, and Alan Yuille [1]. 
