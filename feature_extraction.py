@@ -1,27 +1,27 @@
 import tempfile
 import matlab.engine
-import scipy.io
+import h5py
 
 
-def random_sample(input_files, central_crop_fraction, samples_per_image):
+def random_sample(input_files, central_crop_fraction, samples_per_image, num_workers):
     eng = matlab.engine.start_matlab()
-    with tempfile.NamedTemporaryFile('w+b', suffix='.mat') as output_file:
+    with tempfile.NamedTemporaryFile('w+b', suffix='.h5') as output_file:
         eng.sample_sid(input_files,
                        output_file.name,
                        central_crop_fraction,
                        samples_per_image,
+                       num_workers,
                        nargout=0)
-        features = scipy.io.loadmat(output_file.name)
-    return features['features'][0]
+        with h5py.File(output_file.name, 'r') as f:
+            features = f['/features'].value
+    return features
 
 
-def dense_sample(input_files, central_crop_fraction, stride=1):
+def dense_sample(input_files, fp, central_crop_fraction, stride=1, num_workers=8):
     eng = matlab.engine.start_matlab()
-    with tempfile.NamedTemporaryFile('w+b', suffix='.mat') as output_file:
-        eng.dense_sid(input_files,
-                      output_file.name,
-                      central_crop_fraction,
-                      stride,
-                      nargout=0)
-        features = scipy.io.loadmat(output_file.name)
-    return features['features'][0]
+    eng.dense_sid(input_files,
+                  fp,
+                  central_crop_fraction,
+                  stride,
+                  num_workers,
+                  nargout=0)

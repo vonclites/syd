@@ -1,4 +1,4 @@
-function sample_sid(image_files, output_file, central_fraction, num_samples)
+function sample_sid(image_files, output_file, central_fraction, num_samples, num_workers)
 settings.sc_min = 3;        %% min ring radius
 settings.sc_max = 50;      %% max ring radius
 settings.nsteps = 10;       %% number of rings
@@ -11,7 +11,7 @@ num_files = length(image_files);
 
 features = cell(1, num_files);
 
-for i = 1:num_files
+parfor (i = 1:num_files, num_workers)
     image = imread(image_files{i});
     
     shape = size(image);
@@ -29,13 +29,14 @@ for i = 1:num_files
         shape = size(image);
     end
     
-    X = randperm(shape(1), num_samples);
-    Y = randperm(shape(2), num_samples);
+    X = randi(shape(1), [1, num_samples]);
+    Y = randi(shape(2), [1, num_samples]);
     
     [~, invar] = get_descriptors(image, settings, [], X, Y);
     features{i} = invar;
 end
 
-save(output_file, 'features') 
+hdf5write(output_file, '/features', features);
 
 end
+
