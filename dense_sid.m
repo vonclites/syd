@@ -1,4 +1,4 @@
-function dense_sid(image_files, output_file, central_fraction, stride, num_workers)
+function dense_sid(image_files, image_ids, output_dir, central_fraction, stride, num_workers, resize)
 settings.sc_min = 3;        %% min ring radius
 settings.sc_max = 50;      %% max ring radius
 settings.nsteps = 10;       %% number of rings
@@ -11,6 +11,7 @@ num_files = length(image_files);
 
 parfor (i = 1:num_files, num_workers)
     image = imread(image_files{i});
+    image = imresize(image, [400, 600])
 
     if and(~isempty(central_fraction), central_fraction ~= 1.0)
         shape = size(image);
@@ -27,7 +28,7 @@ parfor (i = 1:num_files, num_workers)
 
     [~, invar] = get_descriptors(image, settings, stride);
     
-    hdf5write(strcat(output_file,'_',int2str(i),'.h5'), '/features', invar);
+    hdf5write(strcat(output_dir,'/',image_ids{i},'.h5'), '/features', invar);
 end
 
 end

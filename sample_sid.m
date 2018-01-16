@@ -1,4 +1,4 @@
-function sample_sid(image_files, output_file, central_fraction, num_samples, num_workers)
+function sample_sid(image_files, output_file, central_fraction, num_samples, num_workers, resize)
 settings.sc_min = 3;        %% min ring radius
 settings.sc_max = 50;      %% max ring radius
 settings.nsteps = 10;       %% number of rings
@@ -13,7 +13,7 @@ features = cell(1, num_files);
 
 parfor (i = 1:num_files, num_workers)
     image = imread(image_files{i});
-    
+    image = imresize(image, [400, 600])
     shape = size(image);
     
     if and(~isempty(central_fraction), central_fraction ~= 1.0)
